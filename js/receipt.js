@@ -1,7 +1,7 @@
 /* Bukti booking: digambar ke canvas -> gambar PNG yang bisa diunduh.
    Dipanggil dari tombol "Unduh bukti" (layar sukses & Booking). Ubah tampilannya di sini. */
 const maskId=n=>{n=(n||'').replace(/\s/g,'');return n.length>7?n.slice(0,4)+'•'.repeat(n.length-7)+n.slice(-3):n};
-function receipt(i){
+function receipt(i){const bb=S.bk[i];if(bb&&bb.st&&bb.st!='paid')return toast(bb.st=='pending'?'Bukti bisa diunduh setelah pembayaran diverifikasi admin':'Pembayaran ditolak');
   const b=S.bk[i],a=b.a,w=b.who,W=800,H=1530,c=document.createElement('canvas');c.width=W;c.height=H;
   const x=c.getContext('2d'),F='"Plus Jakarta Sans",system-ui,sans-serif',INK='#0E0F0C',MUT='#7B7E72';
   const T=(t,px,py,sz,wt,col,al)=>{x.font=`${wt} ${sz}px ${F}`;x.fillStyle=col||INK;x.textAlign=al||'left';x.fillText(t,px,py)};

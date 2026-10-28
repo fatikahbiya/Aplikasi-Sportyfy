@@ -7,7 +7,7 @@ const ACT=[
 {id:5,n:'3x3 Street Hoops',s:'basketball',p:30000,l:'Lapangan Kota Barat',d:'Jum, 31 Okt',t:'16.00',k:8,ty:'Menengah',by:'Hoops Jogja',ab:'Turnamen mini 3x3, sistem gugur. Tim dibentuk di tempat.'},
 {id:6,n:'Spike Night',s:'volleyball',p:20000,l:'GOR UNS',d:'Rab, 5 Nov',t:'18.30',k:10,ty:'Pemula',by:'Spike Club',ab:'Latihan passing & spike lalu fun match. Cocok buat pemula.'}];
 const COM=[['Skateboard Solo','🛹',248],['Solo Runners','👟',512],['Solo Badminton','🏸',187],['Solo Futsal Squad','⚽',329],['Hoops Jogja','🏀',144],['Spike Club Kampus','🏐',96]];
-const S={idn:{nm:'',hp:'',em:'',nik:''},ci:0,scr:'splash',st:[],cat:'Semua',q:'',a:null,qty:1,bk:[],join:new Set([0]),seg:0,ob:0,mode:'in',tot:0,left:900,tm:null,user:'Fatikah',dir:'fwd'};
+const S={idn:{nm:'',hp:'',em:'',nik:''},ci:0,scr:'splash',st:[],cat:'Semua',q:'',a:null,qty:1,bk:[],join:new Set([0]),seg:0,ob:0,mode:'in',tot:0,left:900,tm:null,user:'Fatikah',dir:'fwd',proof:null,af:'pending'};
 const $=i=>document.getElementById(i);
 const toast=m=>{const t=$('t');t.textContent=m;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),1900)};
 const MAIN=['home','explore','bookings','community','profile'];

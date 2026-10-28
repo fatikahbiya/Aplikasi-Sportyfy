@@ -24,13 +24,23 @@ function startPay(){const d=S.idn;
   if(!/^(\+62|62|0)8\d{7,12}$/.test(d.hp.replace(/[\s-]/g,'')))return toast('No. HP tidak valid');
   if(d.em&&!/^\S+@\S+\.\S+$/.test(d.em))return toast('Email tidak valid');
   if(d.nik.replace(/\s/g,'').length<8)return toast('Isi nomor identitas');
-  if(!S.tot)return finish();S.left=900;go('qris');clearInterval(S.tm);S.tm=setInterval(()=>{S.left--;const c=$('cd');if(S.scr!='qris'||S.left<=0){clearInterval(S.tm);if(S.left<=0&&S.scr=='qris'){toast('Waktu habis');back()}return}c.textContent=Math.floor(S.left/60)+':'+String(S.left%60).padStart(2,'0')},1000)}
+  if(!S.tot)return finish();S.left=900;S.proof=null;go('qris');clearInterval(S.tm);S.tm=setInterval(()=>{S.left--;const c=$('cd');if(S.scr!='qris'||S.left<=0){clearInterval(S.tm);if(S.left<=0&&S.scr=='qris'){toast('Waktu habis');back()}return}c.textContent=Math.floor(S.left/60)+':'+String(S.left%60).padStart(2,'0')},1000)}
+const proofPrevHtml=()=>S.proof?`<img src="${S.proof}" alt="Bukti bayar" style="width:100%;max-height:240px;object-fit:contain;border-radius:14px;margin-top:12px;background:#fff"><p class="mut" style="margin-top:6px">✓ Bukti siap dikirim</p>`:'';
+function pickProof(inp){const f=inp.files&&inp.files[0];if(!f)return;
+  if(!f.type.startsWith('image/'))return toast('File harus berupa gambar');
+  const r=new FileReader();r.onerror=()=>toast('Gagal membaca file');
+  r.onload=()=>{const im=new Image();im.onerror=()=>toast('Gambar tidak bisa dibuka');
+    im.onload=()=>{const k=Math.min(1,900/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);
+      const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);
+      S.proof=c.toDataURL('image/jpeg',.65);const p=$('pv');if(p)p.innerHTML=proofPrevHtml();toast('Bukti terpilih')};
+    im.src=r.result};
+  r.readAsDataURL(f);inp.value=''}
 function cancelPay(){clearInterval(S.tm);back()}
-function confirmPay(){clearInterval(S.tm);sheet('<div class="spin"></div><h2>Mengecek pembayaran…</h2><p class="mut" style="margin-top:6px">Mohon tunggu sebentar</p>');setTimeout(()=>{$('o').innerHTML='';finish()},1800)}
+function confirmPay(){if(!S.proof)return toast('Unggah bukti pembayaran dulu');clearInterval(S.tm);sheet('<div class="spin"></div><h2>Mengirim bukti…</h2><p class="mut" style="margin-top:6px">Mohon tunggu sebentar</p>');setTimeout(()=>{$('o').innerHTML='';finish()},1800)}
 function finish(){const sub=S.a.p*S.qty,d=new Date(),z=n=>String(n).padStart(2,'0');
-  S.bk.push({a:S.a,q:S.qty,x:0,who:{...S.idn},sub,f:S.tot-sub,tot:S.tot,paid:d.toLocaleString('id-ID',{dateStyle:'long',timeStyle:'short'}),
+  S.bk.push({a:S.a,q:S.qty,x:0,st:S.tot?'pending':'paid',proof:S.tot?S.proof:null,who:{...S.idn},sub,f:S.tot-sub,tot:S.tot,paid:d.toLocaleString('id-ID',{dateStyle:'long',timeStyle:'short'}),
     no:'SPF-'+String(d.getFullYear()).slice(2)+z(d.getMonth()+1)+z(d.getDate())+'-'+(1000+Math.floor(Math.random()*9000))});
-  S.ci=S.bk.length-1;saveTx(S.bk[S.ci]);S.st=[];S.scr='done';S.dir='fwd';draw()}
+  S.ci=S.bk.length-1;saveTx(S.bk[S.ci]);S.proof=null;S.st=[];S.scr='done';S.dir='fwd';draw()}
 function askCancel(i){sheet(`<div style="font-size:44px">🤔</div><h2 style="margin:8px 0 6px">Batalkan booking ini?</h2><p class="mut" style="margin-bottom:20px">Gratis jika lebih dari 24 jam sebelum mulai.</p><button class="btn" style="background:var(--red)" onclick="cancelBk(${i});$('o').innerHTML='';toast('Booking dibatalkan');draw()">Ya, batalkan</button><button class="btn ghost" style="margin-top:10px" onclick="$('o').innerHTML=''">Tidak jadi</button>`)}
 $('o').addEventListener('click',e=>{if(e.target.classList.contains('ov'))$('o').innerHTML=''});
 restore();draw();setTimeout(()=>{S.scr=S.me?(S.me.role=='admin'?'admin':'home'):'onboard';S.dir='fade';draw()},1500);
